@@ -1,0 +1,203 @@
+from copy import deepcopy
+
+
+# tworzy wlasna macierz
+def create_own_matrix():
+    print('Wpisz macierz sasiedztwa wiersz po wierszu:')
+    matrix = []
+    first_row = input().split()
+    matrix.append(first_row)
+    for i in range(len(first_row) - 1):
+        matrix.append(input().split())
+    print('adjacency matrix:', matrix)
+    return matrix
+
+
+# robi z macierzy liste nastepnikow
+def to_consequents_list(matrix):
+    clist = []
+    for i in range(len(matrix)):
+        clist.append([])
+        for j in range(len(matrix)):
+            if matrix[i][j] == 1:
+                clist[i].append(j)
+    print('consequents list:', clist)
+    return clist
+
+
+# robi z macierzy liste krawedzi
+def to_edge_table(matrix):
+    table = []
+    adjacency_matrix_copy = deepcopy(matrix)
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if adjacency_matrix_copy[i][j] == 1:
+                table.append([i, j])
+                adjacency_matrix_copy[j][i] = 0
+    print('edge table:', table)
+    return table
+
+
+# wywoływana w inndej funkcji
+def dfs_adjacency_matrix(matrix_copy, to_look, node):
+    if node in to_look:
+        print(node)
+        to_look.remove(node)
+    for position_number in range(len(matrix_copy)):
+        if matrix_copy[node][position_number] == 1:
+            matrix_copy[node][position_number] = 0
+            dfs_adjacency_matrix(matrix_copy, to_look, position_number)
+
+
+# printuje dfs z macierzy sąsiedztwa
+def print_dfs_adjacency_matrix(matrix):
+    to_look = list(range(0, len(matrix)))
+    print('dfs adjecency matrix:')
+    matrix_copy = deepcopy(matrix)
+    while to_look:
+        dfs_adjacency_matrix(matrix_copy, to_look, to_look[0])
+
+
+# wywolywana w innej funkcji
+def bfs_adjacency_matrix(matrix_copy, node, to_look):
+    visited = [node]
+    stack = [node]
+    if node in to_look:
+        to_look.remove(node)
+    while stack:
+        current = stack.pop(0)
+        print(current)
+        if current in to_look:
+            to_look.remove(current)
+        for position in range(len(adjacency_matrix)):
+            if matrix_copy[current][position] == 1 and position not in visited:
+                stack.append(position)
+                visited.append(position)
+
+
+# printuje bfs z macierzy sasiedztwa
+def print_bfs_adjacency_matrix(matrix):
+    to_look = list(range(0, len(matrix)))
+    matrix_copy = deepcopy(matrix)
+    print('bfs adjacency matrix:')
+    while to_look:
+        bfs_adjacency_matrix(matrix_copy, to_look[0], to_look)
+
+
+# wywolywana w innej funkcji
+def dfs_consequents_list(visited, clist, node, to_look):
+    if node not in visited:
+        print(node)
+        visited.append(node)
+        if node in to_look:
+            to_look.remove(node)
+        for consequent in clist[node]:
+            dfs_consequents_list(visited, clist, consequent, to_look)
+
+
+# printuje dfs z listy nastepnikow
+def print_dfs_consequents_list(clist):
+    visited = []
+    to_look = list(range(0, len(clist)))
+    print('dfs consequents list:')
+    while to_look:
+        dfs_consequents_list(visited, clist, to_look[0], to_look)
+
+
+# wywolywana w innej funkcji
+def bfs_consequents_list(clist, node, to_look):
+    visited = [node]
+    stack = [node]
+    if node in to_look:
+        to_look.remove(node)
+    while stack:
+        current = stack.pop(0)
+        print(current)
+        if current in to_look:
+            to_look.remove(current)
+        for consequent in clist[current]:
+            if consequent not in visited:
+                stack.append(consequent)
+                visited.append(consequent)
+
+
+# printuje bfs z listy nastepnikow
+def print_bfs_consequents_list(clist):
+    to_look = list(range(0, len(clist)))
+    print('bfs consequents list:')
+    while to_look:
+        bfs_consequents_list(clist, to_look[0], to_look)
+
+
+# wywolywana w innej funkcji
+def dfs_edge_table(table, node, to_look):
+    if node in to_look:
+        print(node)
+        to_look.remove(node)
+    for edge in table:
+        if edge[0] == node:
+            dfs_edge_table(table, edge[1], to_look)
+
+
+# printuje dfs z listy krawedzi
+def print_dfs_edge_table(table, number_of_nodes):
+    to_look = list(range(0, number_of_nodes))
+    print('dfs edge table:')
+    while to_look:
+        dfs_edge_table(table, to_look[0], to_look)
+
+
+# wywolywana w innej funkcji
+def bfs_edge_table(table, node, to_look):
+    visited = [node]
+    stack = [node]
+    if node in to_look:
+        to_look.remove(node)
+    while stack:
+        current = stack.pop(0)
+        print(current)
+        if current in to_look:
+            to_look.remove(current)
+        for edge in table:
+            if edge[0] == current and edge[1] not in visited:
+                stack.append(edge[1])
+                visited.append(edge[1])
+
+
+# printuje bfs z listy krawedzi
+def print_bfs_edge_table(table, number_of_nodes):
+    to_look = list(range(0, number_of_nodes))
+    print('bfs edge table:')
+    while to_look:
+        bfs_edge_table(table, to_look[0], to_look)
+
+
+# drivers code
+# adjacency_matrix = [[0, 1, 0, 0, 0, 0, 0, 0],
+#                     [1, 0, 1, 1, 1, 1, 0, 0],
+#                     [0, 1, 0, 1, 0, 0, 0, 0],
+#                     [0, 1, 1, 0, 0, 0, 1, 0],
+#                     [0, 1, 0, 0, 0, 1, 1, 1],
+#                     [0, 1, 0, 0, 1, 1, 0, 1],
+#                     [0, 0, 0, 1, 1, 0, 0, 0],
+#                     [0, 0, 0, 0, 1, 1, 0, 0]]
+
+adjacency_matrix = [[0, 1, 0, 1, 0, 1],
+                    [1, 0, 1, 0, 0, 1],
+                    [0, 1, 0, 1, 0, 0],
+                    [1, 0, 1, 0, 1, 0],
+                    [0, 0, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 1, 0]]
+
+print(adjacency_matrix)
+edge_table = to_edge_table(adjacency_matrix)
+consequents_list = to_consequents_list(adjacency_matrix)
+print("\n")
+print_dfs_adjacency_matrix(adjacency_matrix)
+print_dfs_consequents_list(consequents_list)
+print_dfs_edge_table(edge_table, len(adjacency_matrix))  # moze wywalic recurssion error
+print("\n")
+print_bfs_adjacency_matrix(adjacency_matrix)
+print_bfs_consequents_list(consequents_list)
+print_bfs_edge_table(edge_table, len(adjacency_matrix))
+
