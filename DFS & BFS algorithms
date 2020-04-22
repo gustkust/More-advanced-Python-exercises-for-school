@@ -33,7 +33,6 @@ def to_edge_table(matrix):
         for j in range(len(matrix)):
             if adjacency_matrix_copy[i][j] == 1:
                 table.append([i, j])
-                adjacency_matrix_copy[j][i] = 0
     print('edge table:', table)
     return table
 
@@ -60,7 +59,6 @@ def print_dfs_adjacency_matrix(matrix):
 
 # wywolywana w innej funkcji
 def bfs_adjacency_matrix(matrix_copy, node, to_look):
-    visited = [node]
     stack = [node]
     if node in to_look:
         to_look.remove(node)
@@ -70,9 +68,9 @@ def bfs_adjacency_matrix(matrix_copy, node, to_look):
         if current in to_look:
             to_look.remove(current)
         for position in range(len(adjacency_matrix)):
-            if matrix_copy[current][position] == 1 and position not in visited:
+            if matrix_copy[current][position] == 1 and position in to_look:
                 stack.append(position)
-                visited.append(position)
+                to_look.remove(position)
 
 
 # printuje bfs z macierzy sasiedztwa
@@ -106,7 +104,6 @@ def print_dfs_consequents_list(clist):
 
 # wywolywana w innej funkcji
 def bfs_consequents_list(clist, node, to_look):
-    visited = [node]
     stack = [node]
     if node in to_look:
         to_look.remove(node)
@@ -116,9 +113,9 @@ def bfs_consequents_list(clist, node, to_look):
         if current in to_look:
             to_look.remove(current)
         for consequent in clist[current]:
-            if consequent not in visited:
+            if consequent in to_look:
                 stack.append(consequent)
-                visited.append(consequent)
+                to_look.remove(consequent)
 
 
 # printuje bfs z listy nastepnikow
@@ -149,7 +146,6 @@ def print_dfs_edge_table(table, number_of_nodes):
 
 # wywolywana w innej funkcji
 def bfs_edge_table(table, node, to_look):
-    visited = [node]
     stack = [node]
     if node in to_look:
         to_look.remove(node)
@@ -159,9 +155,9 @@ def bfs_edge_table(table, node, to_look):
         if current in to_look:
             to_look.remove(current)
         for edge in table:
-            if edge[0] == current and edge[1] not in visited:
+            if edge[0] == current and edge[1] in to_look:
                 stack.append(edge[1])
-                visited.append(edge[1])
+                to_look.remove(edge[1])
 
 
 # printuje bfs z listy krawedzi
@@ -172,22 +168,62 @@ def print_bfs_edge_table(table, number_of_nodes):
         bfs_edge_table(table, to_look[0], to_look)
 
 
-# drivers code
-# adjacency_matrix = [[0, 1, 0, 0, 0, 0, 0, 0],
-#                     [1, 0, 1, 1, 1, 1, 0, 0],
-#                     [0, 1, 0, 1, 0, 0, 0, 0],
-#                     [0, 1, 1, 0, 0, 0, 1, 0],
-#                     [0, 1, 0, 0, 0, 1, 1, 1],
-#                     [0, 1, 0, 0, 1, 1, 0, 1],
-#                     [0, 0, 0, 1, 1, 0, 0, 0],
-#                     [0, 0, 0, 0, 1, 1, 0, 0]]
+# wywoływana w inndej funkcji
+def top_sort_dfs_adjacency_matrix(matrix_copy, to_look, node):
+    if node in to_look and matrix_copy[node] == [0] * len(matrix_copy):
+        print(node)
+        to_look.remove(node)
+    for position_number in range(len(matrix_copy)):
+        if matrix_copy[node][position_number] == 1:
+            matrix_copy[node][position_number] = 0
+            top_sort_dfs_adjacency_matrix(matrix_copy, to_look, position_number)
+            if node in to_look and matrix_copy[node] == [0] * len(matrix_copy):
+                print(node)
+                to_look.remove(node)
 
-adjacency_matrix = [[0, 1, 0, 1, 0, 1],
-                    [1, 0, 1, 0, 0, 1],
-                    [0, 1, 0, 1, 0, 0],
-                    [1, 0, 1, 0, 1, 0],
-                    [0, 0, 0, 1, 0, 1],
-                    [1, 1, 0, 0, 1, 0]]
+
+# printuje top sort dfs z macierzy sąsiedztwa
+def print_top_sort_dfs_adjacency_matrix(matrix):
+    to_look = list(range(0, len(matrix)))
+    print('top sort dfs adjecency matrix:')
+    matrix_copy = deepcopy(matrix)
+    while to_look:
+        top_sort_dfs_adjacency_matrix(matrix_copy, to_look, to_look[0])
+
+
+# printuje bfs z macierzy sasiedztwa
+def top_sort_bfs_adjacency_matrix(matrix, degrees, to_look):
+    for i in range(len(matrix)):
+        if degrees[i] == 0:
+            degrees[i] -= 1
+            print(i)
+            to_look.remove(i)
+            for j in range(len(matrix)):
+                if adjacency_matrix[i][j] == 1:
+                    degrees[j] -= 1
+
+
+# printuje bfs z macierzy sasiedztwa
+def print_top_sort_bfs_adjacency_matrix(matrix):
+    to_look = list(range(0, len(matrix)))
+    print('top sort bfs adjacency matrix:')
+    degrees = [0] * len(matrix)
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if matrix[j][i] == 1:
+                degrees[i] += 1
+    while to_look:
+        top_sort_bfs_adjacency_matrix(matrix, degrees, to_look)
+
+
+# drivers code
+
+adjacency_matrix = [[0, 1, 0, 0, 0, 1],
+                    [0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 1, 0, 0],
+                    [1, 0, 0, 0, 1, 0],
+                    [0, 0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 1, 0]]
 
 print(adjacency_matrix)
 edge_table = to_edge_table(adjacency_matrix)
@@ -200,4 +236,3 @@ print("\n")
 print_bfs_adjacency_matrix(adjacency_matrix)
 print_bfs_consequents_list(consequents_list)
 print_bfs_edge_table(edge_table, len(adjacency_matrix))
-
