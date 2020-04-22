@@ -191,7 +191,7 @@ def print_top_sort_dfs_adjacency_matrix(matrix):
         top_sort_dfs_adjacency_matrix(matrix_copy, to_look, to_look[0])
 
 
-# printuje bfs z macierzy sasiedztwa
+# wywoływana w inndej funkcji
 def top_sort_bfs_adjacency_matrix(matrix, degrees, to_look):
     for i in range(len(matrix)):
         if degrees[i] == 0:
@@ -199,7 +199,7 @@ def top_sort_bfs_adjacency_matrix(matrix, degrees, to_look):
             print(i)
             to_look.remove(i)
             for j in range(len(matrix)):
-                if adjacency_matrix[i][j] == 1:
+                if matrix[i][j] == 1:
                     degrees[j] -= 1
 
 
@@ -216,23 +216,79 @@ def print_top_sort_bfs_adjacency_matrix(matrix):
         top_sort_bfs_adjacency_matrix(matrix, degrees, to_look)
 
 
-# drivers code
+# wywoływana w inndej funkcji
+def top_sort_bfs_consequents_list(clist, degrees, to_look):
+    for i in range(len(clist)):
+        if degrees[i] == 0:
+            degrees[i] -= 1
+            print(i)
+            to_look.remove(i)
+            for j in clist[i]:
+                degrees[j] -= 1
 
-adjacency_matrix = [[0, 1, 0, 0, 0, 1],
-                    [0, 0, 1, 0, 0, 0],
-                    [0, 0, 0, 1, 0, 0],
-                    [1, 0, 0, 0, 1, 0],
-                    [0, 0, 0, 0, 0, 0],
-                    [0, 1, 0, 0, 1, 0]]
+
+# printuje bfs z listy sąsiedztwa
+def print_top_sort_bfs_consequents_list(clist):
+    to_look = list(range(0, len(clist)))
+    print('top sort bfs consequents list:')
+    degrees = [0] * len(clist)
+    for i in range(len(clist)):
+        for j in range(len(clist[i])):
+            degrees[clist[i][j]] += 1
+    while to_look:
+        top_sort_bfs_consequents_list(clist, degrees, to_look)
+
+
+# wywoływana w inndej funkcji
+def top_sort_bfs_edge_table(table, degrees, to_look):
+    for i in range(len(degrees)):
+        if degrees[i] == 0:
+            degrees[i] -= 1
+            print(i)
+            to_look.remove(i)
+            for edge in table:
+                if edge[0] == i:
+                    degrees[edge[1]] -= 1
+
+
+# printuje bfs z listy sąsiedztwa
+def print_top_sort_bfs_edge_table(table, number_of_nodes):
+    to_look = list(range(0, number_of_nodes))
+    table_copy = deepcopy(table)
+    print('top sort bfs edge table:')
+    degrees = [0] * number_of_nodes
+    for i in range(len(table)):
+        for j in range(len(table)):
+            if table[j][1] == i:
+                degrees[i] += 1
+    while to_look:
+        top_sort_bfs_edge_table(table_copy, degrees, to_look)
+
+
+# drivers code
+adjacency_matrix = [[0, 1, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 1, 1, 0, 1, 0, 0],
+                    [0, 0, 0, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 1, 1, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 1, 0, 0]]
 
 print(adjacency_matrix)
-edge_table = to_edge_table(adjacency_matrix)
 consequents_list = to_consequents_list(adjacency_matrix)
+edge_table = to_edge_table(adjacency_matrix)
 print("\n")
 print_dfs_adjacency_matrix(adjacency_matrix)
 print_dfs_consequents_list(consequents_list)
-print_dfs_edge_table(edge_table, len(adjacency_matrix))  # moze wywalic recurssion error
+print_dfs_edge_table(edge_table, len(adjacency_matrix))
 print("\n")
 print_bfs_adjacency_matrix(adjacency_matrix)
 print_bfs_consequents_list(consequents_list)
 print_bfs_edge_table(edge_table, len(adjacency_matrix))
+print("\n")
+print_top_sort_dfs_adjacency_matrix(adjacency_matrix)
+print("\n")
+print_top_sort_bfs_adjacency_matrix(adjacency_matrix)
+print_top_sort_bfs_consequents_list(consequents_list)
+print_top_sort_bfs_edge_table(edge_table, len(adjacency_matrix))
