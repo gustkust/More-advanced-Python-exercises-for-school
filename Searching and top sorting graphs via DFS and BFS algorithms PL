@@ -452,13 +452,13 @@ while option != '0':
             print_top_dfs_edge_table(edge_table, n)
             input("Wcisnij enter aby kontynuowac...")
         elif option == '7':
-            print("Macierz sasiedztwa(sortowanie, DFS)")
+            print("Macierz sasiedztwa(sortowanie, BFS)")
             print_top_bfs_adjacency_matrix(adj_matrix)
             input("Wcisnij enter aby kontynuowac...")
-            print("Lista nastepnikow(sortowanie, DFS)")
+            print("Lista nastepnikow(sortowanie, BFS)")
             print_top_bfs_adjacency_list(adjacency_list)
             input("Wcisnij enter aby kontynuowac...")
-            print("Tabela krawedzi(sortowanie, DFS)")
+            print("Tabela krawedzi(sortowanie, BFS)")
             print_top_bfs_edge_table(edge_table, n)
             input("Wcisnij enter aby kontynuowac...")
     else:
