@@ -10,8 +10,8 @@ SCREEN_HEIGHT = 720
 FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
 BALLS_COLOR = (0, 0, 0)
-BALLS_SIZE = 35
-NUMBER_OF_BALLS = 10
+BALLS_SIZE = 30
+NUMBER_OF_BALLS = 20
 BALLS_SPEED = 5
 STOP_TIME = 1100
 PINK = (211, 23, 142)
@@ -59,10 +59,22 @@ def collision(ball1, ball2):
     v2 = [ball2.x_speed, ball2.y_speed]
     # 3
     # vectors to plain numbers
-    v1n = (v1[0] * un[0] + v1[1] * un[1]) / (un[0] * un[0] + un[1] * un[1])
-    v1t = (v1[0] * ut[0] + v1[1] * ut[1]) / (ut[0] * ut[0] + ut[1] * ut[1])
-    v2n = (v2[0] * un[0] + v2[1] * un[1]) / (un[0] * un[0] + un[1] * un[1])
-    v2t = (v2[0] * ut[0] + v2[1] * ut[1]) / (ut[0] * ut[0] + ut[1] * ut[1])
+    if un[0] * un[0] + un[1] * un[1] == 0:
+        v1n = 0
+    else:
+        v1n = (v1[0] * un[0] + v1[1] * un[1]) / (un[0] * un[0] + un[1] * un[1])
+    if ut[0] * ut[0] + ut[1] * ut[1] == 0:
+        v1t = 0
+    else:
+        v1t = (v1[0] * ut[0] + v1[1] * ut[1]) / (ut[0] * ut[0] + ut[1] * ut[1])
+    if un[0] * un[0] + un[1] * un[1] == 0:
+        v2n = 0
+    else:
+        v2n = (v2[0] * un[0] + v2[1] * un[1]) / (un[0] * un[0] + un[1] * un[1])
+    if ut[0] * ut[0] + ut[1] * ut[1] == 0:
+        v2t = 0
+    else:
+        v2t = (v2[0] * ut[0] + v2[1] * ut[1]) / (ut[0] * ut[0] + ut[1] * ut[1])
     # 4
     # new tangent velocities
     # there is no friction so this step is not necessary
@@ -98,8 +110,12 @@ def collision(ball1, ball2):
     # distance from collision point to ball1 centre (a bit smaller than radius)
     d = sqrt((ball1.x - cx) ** 2 + (ball1.y - cy) ** 2)
     # distance between point of the collision to ball1 center point in both axes divided by d
-    x_speed = (ball1.x - cx) / d
-    dy = (ball1.y - cy) / d
+    if d == 0:
+        x_speed = 0
+        dy = 0
+    else:
+        x_speed = (ball1.x - cx) / d
+        dy = (ball1.y - cy) / d
     # ball1 move to point of collision + radius time ex or ey
     ball1.x = cx + x_speed * ball1.radius
     ball1.y = cy + dy * ball1.radius
