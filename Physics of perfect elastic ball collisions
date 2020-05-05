@@ -157,7 +157,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-# creating circles
+# creating balls
 balls = []
 count = 0
 while count < NUMBER_OF_BALLS:
@@ -199,7 +199,7 @@ while True:
             else:
                 print('Average time between collision with pink ball:', sum(pink_collision_times) / len(pink_collision_times))
             exit(0)
-    # moves balls and checks if any circle hit the wall
+    # moves balls and checks if any hits the wall
     for element in balls:
         move(element)
     # checks for collisions between balls
