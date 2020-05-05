@@ -10,8 +10,8 @@ SCREEN_HEIGHT = 720
 FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
 BALLS_COLOR = (0, 0, 0)
-BALLS_SIZE = 30
-NUMBER_OF_BALLS = 20
+BALLS_SIZE = 35
+NUMBER_OF_BALLS = 12
 BALLS_SPEED = 5
 STOP_TIME = 1100
 PINK = (211, 23, 142)
@@ -180,7 +180,11 @@ while True:
     if time == STOP_TIME:
         print('Time since pink ball appeared:', time - PINK_LAUNCH_TIME)
         print('Number of collisions with pink ball:', len(pink_collision_times))
-        print('Average time between collision with pink ball:', sum(pink_collision_times) / len(pink_collision_times))
+        if len(pink_collision_times) == 0:
+            print('Average time between collision with pink ball: 0')
+        else:
+            print('Average time between collision with pink ball:',
+                  sum(pink_collision_times) / len(pink_collision_times))
         exit(0)
     if time == PINK_LAUNCH_TIME:
         balls.append(Ball(SCREEN_WIDTH - BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE, -PINK_SPEED, -PINK_SPEED, BALLS_SIZE, PINK))
@@ -190,7 +194,10 @@ while True:
         if event.type == pygame.QUIT:
             print('Time since pink ball appeared:', time - PINK_LAUNCH_TIME)
             print('Number of collisions with pink ball:', len(pink_collision_times))
-            print('Average time between collision with pink ball:', sum(pink_collision_times) / len(pink_collision_times))
+            if len(pink_collision_times) == 0:
+                print('Average time between collision with pink ball: 0')
+            else:
+                print('Average time between collision with pink ball:', sum(pink_collision_times) / len(pink_collision_times))
             exit(0)
     # moves balls and checks if any circle hit the wall
     for element in balls:
