@@ -11,11 +11,11 @@ FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
 BALLS_COLOR = (0, 0, 0)
 BALLS_SIZE = 35
-NUMBER_OF_BALLS = 12
-BALLS_SPEED = 5
-STOP_TIME = 1100
-PINK = (211, 23, 142)
+NUMBER_OF_BALLS = 8
+BALLS_SPEED = 4
 PINK_LAUNCH_TIME = 100
+STOP_TIME = 3600 + PINK_LAUNCH_TIME
+PINK = (211, 23, 142)
 PINK_SPEED = BALLS_SPEED / 10
 
 
@@ -103,27 +103,35 @@ def collision(ball1, ball2):
     ball2.y_speed = v2[1]
     # end of collision calculation
 
-    # moving ball1 and ball2 a litte so they dont stuck into each other
+    # moving ball1 and ball2 "out of each other"
     # point of collision
     cx = (ball1.x + ball2.x) / 2
     cy = (ball1.y + ball2.y) / 2
     # distance from collision point to ball1 centre (a bit smaller than radius)
     d = sqrt((ball1.x - cx) ** 2 + (ball1.y - cy) ** 2)
-    # distance between point of the collision to ball1 center point in both axes divided by d
+    # if balls are exactly into each other, there are wrong setting
     if d == 0:
-        x_speed = 0
-        dy = 0
-    else:
-        x_speed = (ball1.x - cx) / d
-        dy = (ball1.y - cy) / d
-    # ball1 move to point of collision + radius time ex or ey
-    ball1.x = cx + x_speed * ball1.radius
-    ball1.y = cy + dy * ball1.radius
-    # ball2 move in opposite direction
-    x_speed = -x_speed
-    dy = -dy
-    ball2.x = cx + x_speed * ball2.radius
-    ball2.y = cy + dy * ball2.radius
+        print("Too many, too small or too fast balls.")
+        exit(0)
+    # distance between point of the collision and ball1 center point in both axes
+    dx = ball1.x - cx
+    dy = ball1.y - cy
+    # proportions in dx, dy, d triangle
+    x_ratio = dx / d
+    y_ratio = dy / d
+    # x and y in new triangle, where radius is instead of d
+    new_x = x_ratio * ball1.radius
+    new_y = y_ratio * ball1.radius
+    # difference between dx, dy and new_x, new_y
+    diff_x = new_x - dx
+    diff_y = new_y - dy
+    # new positions in relation to center (could be in relation to old position)
+    # difference times two, so it is like they already bounce back and not get "sticky" first
+    ball1.x = cx + dx + 2 * diff_x
+    ball1.y = cy + dy + 2 * diff_y
+    # same with ball2 in the opposite direction
+    ball2.x = cx - dx - 2 * diff_x
+    ball2.y = cy - dy - 2 * diff_y
     return ball1, ball2
 
 
@@ -149,7 +157,8 @@ def move(ball):
 
 # writes prompt and creates screen and clock
 print('\nHello! This program allows to play with perfect elastic ball collisions.')
-print('\nAll collision formulas based on article by Chad Berchek "2-Dimensional Elastic Collisions without Trigonometry".')
+print('\nAll collision formulas based on article by Chad Berchek '
+      '"2-Dimensional Elastic Collisions without Trigonometry".')
 print('http://www.vobarian.com/collisions/\n')
 # On one time unit every ball travels thought as many pixels as their speed says
 # It is possible to add masses to this simulation, there is placeholder for it in formulas
@@ -163,7 +172,9 @@ count = 0
 while count < NUMBER_OF_BALLS:
     for i in range(floor(SCREEN_HEIGHT / (2.5 * BALLS_SIZE))):
         for j in range(floor(SCREEN_WIDTH / (2.5 * BALLS_SIZE))):
-            balls.append(Ball(2.5 * BALLS_SIZE + j * 2.5 * BALLS_SIZE, 2.5 * BALLS_SIZE + i * 2.5 * BALLS_SIZE, choice([-BALLS_SPEED, BALLS_SPEED]), choice([-BALLS_SPEED, BALLS_SPEED]), BALLS_SIZE, BALLS_COLOR))
+            balls.append(Ball(2.5 * BALLS_SIZE + j * 2.5 * BALLS_SIZE, 2.5 * BALLS_SIZE + i * 2.5 * BALLS_SIZE,
+                              choice([-BALLS_SPEED, BALLS_SPEED]), choice([-BALLS_SPEED, BALLS_SPEED]),
+                              BALLS_SIZE, BALLS_COLOR))
             count += 1
             if count == NUMBER_OF_BALLS:
                 break
@@ -174,34 +185,49 @@ while count < NUMBER_OF_BALLS:
 time = 0
 time_since_last_pink_collision = 0
 pink_collision_times = []
+pink_collision_distances = []
+distance_since_last_collision = 0
 while True:
     time += 1
     time_since_last_pink_collision += 1
     if time == STOP_TIME:
-        print('Time since pink ball appeared:', time - PINK_LAUNCH_TIME)
-        print('Number of collisions with pink ball:', len(pink_collision_times))
+        print('Time since pink ball appeared is', time - PINK_LAUNCH_TIME, 'frames, which is',
+              (time - PINK_LAUNCH_TIME) / 60, 'seconds.')
+        print('Number of collisions with pink ball is {}.'.format(len(pink_collision_times)))
         if len(pink_collision_times) == 0:
-            print('Average time between collision with pink ball: 0')
+            print('There were no collisions with pink ball.')
         else:
-            print('Average time between collision with pink ball:',
-                  sum(pink_collision_times) / len(pink_collision_times))
+            print('Average time between collision with pink ball is',
+                  sum(pink_collision_times) / len(pink_collision_times), 'frames, which is',
+                  sum(pink_collision_times) / len(pink_collision_times) / 60, 'seconds.')
+            print('Average distance between collision with pink ball is',
+                  sum(pink_collision_distances) / len(pink_collision_distances), 'pixels.')
         exit(0)
     if time == PINK_LAUNCH_TIME:
-        balls.append(Ball(SCREEN_WIDTH - BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE, -PINK_SPEED, -PINK_SPEED, BALLS_SIZE, PINK))
+        balls.append(Ball(SCREEN_WIDTH - BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE, -PINK_SPEED, -PINK_SPEED,
+                          BALLS_SIZE, PINK))
         time_since_last_pink_collision = 0
     # checks if user wants to close the screen
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            print('Time since pink ball appeared:', time - PINK_LAUNCH_TIME)
-            print('Number of collisions with pink ball:', len(pink_collision_times))
+            print('Time since pink ball appeared is', time - PINK_LAUNCH_TIME, 'frames, which is',
+                  (time - PINK_LAUNCH_TIME) / 60, 'seconds.')
+            print('Number of collisions with pink ball is {}.'.format(len(pink_collision_times)))
             if len(pink_collision_times) == 0:
-                print('Average time between collision with pink ball: 0')
+                print('There were no collisions with pink ball.')
             else:
-                print('Average time between collision with pink ball:', sum(pink_collision_times) / len(pink_collision_times))
+                print('Average time between collision with pink ball is',
+                      sum(pink_collision_times) / len(pink_collision_times), 'frames, which is',
+                      sum(pink_collision_times) / len(pink_collision_times) / 60, 'seconds.')
+                print('Average distance between collision with pink ball is',
+                      sum(pink_collision_distances) / len(pink_collision_distances), 'pixels.')
             exit(0)
     # moves balls and checks if any hits the wall
     for element in balls:
         move(element)
+        if element.color == PINK:
+            distance_since_last_collision = distance_since_last_collision + sqrt(element.x_speed ** 2
+                                                                                 + element.y_speed ** 2)
     # checks for collisions between balls
     for ball1_index in range(0, len(balls)):
         for ball2_index in range(ball1_index + 1, len(balls)):
@@ -209,6 +235,8 @@ while True:
                 if balls[ball1_index].color == PINK or balls[ball2_index].color == PINK:
                     pink_collision_times.append(time_since_last_pink_collision)
                     time_since_last_pink_collision = 0
+                    pink_collision_distances.append(distance_since_last_collision)
+                    distance_since_last_collision = 0
                 balls[ball1_index], balls[ball2_index] = collision(balls[ball1_index], balls[ball2_index])
                 # breaks the second for loop, so the balls wont stuck into each other
                 break
