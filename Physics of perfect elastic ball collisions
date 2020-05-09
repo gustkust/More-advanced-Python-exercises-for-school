@@ -10,9 +10,9 @@ SCREEN_HEIGHT = 720
 FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
 BALLS_COLOR = (0, 0, 0)
-BALLS_SIZE = 35
-NUMBER_OF_BALLS = 8
-BALLS_SPEED = 4
+BALLS_SIZE = 36
+NUMBER_OF_BALLS = 49
+BALLS_SPEED = 5
 PINK_LAUNCH_TIME = 100
 STOP_TIME = 3600 + PINK_LAUNCH_TIME
 PINK = (211, 23, 142)
@@ -170,8 +170,8 @@ clock = pygame.time.Clock()
 balls = []
 count = 0
 while count < NUMBER_OF_BALLS:
-    for i in range(floor(SCREEN_HEIGHT / (2.5 * BALLS_SIZE))):
-        for j in range(floor(SCREEN_WIDTH / (2.5 * BALLS_SIZE))):
+    for i in range(floor(SCREEN_HEIGHT / (2.5 * BALLS_SIZE) - 1)):
+        for j in range(floor(SCREEN_WIDTH / (2.5 * BALLS_SIZE) - 1)):
             balls.append(Ball(2.5 * BALLS_SIZE + j * 2.5 * BALLS_SIZE, 2.5 * BALLS_SIZE + i * 2.5 * BALLS_SIZE,
                               choice([-BALLS_SPEED, BALLS_SPEED]), choice([-BALLS_SPEED, BALLS_SPEED]),
                               BALLS_SIZE, BALLS_COLOR))
