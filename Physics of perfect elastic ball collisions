@@ -1,7 +1,7 @@
 # imports
 import pygame
 from math import sqrt, floor
-from random import choice
+from random import randint, uniform
 
 
 # some variables
@@ -9,14 +9,14 @@ SCREEN_WIDTH = 720
 SCREEN_HEIGHT = 720
 FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
-BALLS_COLOR = (0, 0, 0)
+BALLS_COLOR = (31, 132, 155)
 BALLS_SIZE = 36
-NUMBER_OF_BALLS = 49
-BALLS_SPEED = 5
-PINK_LAUNCH_TIME = 100
-STOP_TIME = 3600 + PINK_LAUNCH_TIME
-PINK = (211, 23, 142)
-PINK_SPEED = BALLS_SPEED / 10
+NUMBER_OF_BALLS = 6
+BALLS_SPEED = 10
+RED_LAUNCH_TIME = 100
+STOP_TIME = 3600 + RED_LAUNCH_TIME
+RED = (155, 31, 31)
+RED_SPEED = BALLS_SPEED / 10
 
 
 # ball class
@@ -172,8 +172,9 @@ count = 0
 while count < NUMBER_OF_BALLS:
     for i in range(1, floor(SCREEN_HEIGHT / (2.5 * BALLS_SIZE))):
         for j in range(1, floor(SCREEN_WIDTH / (2.5 * BALLS_SIZE))):
-            balls.append(Ball(j * 2.5 * BALLS_SIZE, i * 2.5 * BALLS_SIZE,
-                              choice([-BALLS_SPEED, BALLS_SPEED]), choice([-BALLS_SPEED, BALLS_SPEED]),
+            balls.append(Ball(randint(BALLS_SIZE, SCREEN_WIDTH - BALLS_SIZE),
+                              randint(BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE),
+                              uniform(-BALLS_SPEED, BALLS_SPEED), uniform(-BALLS_SPEED, BALLS_SPEED),
                               BALLS_SIZE, BALLS_COLOR))
             count += 1
             if count == NUMBER_OF_BALLS:
@@ -183,59 +184,59 @@ while count < NUMBER_OF_BALLS:
 
 # main loop
 time = 0
-time_since_last_pink_collision = 0
-pink_collision_times = []
-pink_collision_distances = []
+time_since_last_RED_collision = 0
+RED_collision_times = []
+RED_collision_distances = []
 distance_since_last_collision = 0
 while True:
     time += 1
-    time_since_last_pink_collision += 1
+    time_since_last_RED_collision += 1
     if time == STOP_TIME:
-        print('Time since pink ball appeared is', time - PINK_LAUNCH_TIME, 'frames, which is',
-              (time - PINK_LAUNCH_TIME) / 60, 'seconds.')
-        print('Number of collisions with pink ball is {}.'.format(len(pink_collision_times)))
-        if len(pink_collision_times) == 0:
-            print('There were no collisions with pink ball.')
+        print('Time since RED ball appeared is', time - RED_LAUNCH_TIME, 'frames, which is',
+              (time - RED_LAUNCH_TIME) / 60, 'seconds.')
+        print('Number of collisions with RED ball is {}.'.format(len(RED_collision_times)))
+        if len(RED_collision_times) == 0:
+            print('There were no collisions with RED ball.')
         else:
-            print('Average time between collision with pink ball is',
-                  sum(pink_collision_times) / len(pink_collision_times), 'frames, which is',
-                  sum(pink_collision_times) / len(pink_collision_times) / 60, 'seconds.')
-            print('Average distance between collision with pink ball is',
-                  sum(pink_collision_distances) / len(pink_collision_distances), 'pixels.')
+            print('Average time between collision with RED ball is',
+                  sum(RED_collision_times) / len(RED_collision_times), 'frames, which is',
+                  sum(RED_collision_times) / len(RED_collision_times) / 60, 'seconds.')
+            print('Average distance between collision with RED ball is',
+                  sum(RED_collision_distances) / len(RED_collision_distances), 'pixels.')
         exit(0)
-    if time == PINK_LAUNCH_TIME:
-        balls.append(Ball(SCREEN_WIDTH - BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE, -PINK_SPEED, -PINK_SPEED,
-                          BALLS_SIZE, PINK))
-        time_since_last_pink_collision = 0
+    if time == RED_LAUNCH_TIME:
+        balls.append(Ball(SCREEN_WIDTH - BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE, uniform(-RED_SPEED, 0),
+                          uniform(-RED_SPEED, 0), BALLS_SIZE, RED))
+        time_since_last_RED_collision = 0
     # checks if user wants to close the screen
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            print('Time since pink ball appeared is', time - PINK_LAUNCH_TIME, 'frames, which is',
-                  (time - PINK_LAUNCH_TIME) / 60, 'seconds.')
-            print('Number of collisions with pink ball is {}.'.format(len(pink_collision_times)))
-            if len(pink_collision_times) == 0:
-                print('There were no collisions with pink ball.')
+            print('Time since RED ball appeared is', time - RED_LAUNCH_TIME, 'frames, which is',
+                  (time - RED_LAUNCH_TIME) / 60, 'seconds.')
+            print('Number of collisions with RED ball is {}.'.format(len(RED_collision_times)))
+            if len(RED_collision_times) == 0:
+                print('There were no collisions with RED ball.')
             else:
-                print('Average time between collision with pink ball is',
-                      sum(pink_collision_times) / len(pink_collision_times), 'frames, which is',
-                      sum(pink_collision_times) / len(pink_collision_times) / 60, 'seconds.')
-                print('Average distance between collision with pink ball is',
-                      sum(pink_collision_distances) / len(pink_collision_distances), 'pixels.')
+                print('Average time between collision with RED ball is',
+                      sum(RED_collision_times) / len(RED_collision_times), 'frames, which is',
+                      sum(RED_collision_times) / len(RED_collision_times) / 60, 'seconds.')
+                print('Average distance between collision with RED ball is',
+                      sum(RED_collision_distances) / len(RED_collision_distances), 'pixels.')
             exit(0)
     # moves balls and checks if any hits the wall
     for element in balls:
         move(element)
-        if element.color == PINK:
+        if element.color == RED:
             distance_since_last_collision = distance_since_last_collision + sqrt(element.x_speed ** 2
                                                                                  + element.y_speed ** 2)
     # checks for collisions between balls
     for ball1_index in range(0, len(balls)):
         for ball2_index in range(ball1_index + 1, len(balls)):
             if collision_check(balls[ball1_index], balls[ball2_index]):
-                if balls[ball1_index].color == PINK or balls[ball2_index].color == PINK:
-                    pink_collision_times.append(time_since_last_pink_collision)
-                    time_since_last_pink_collision = 0
-                    pink_collision_distances.append(distance_since_last_collision)
+                if balls[ball1_index].color == RED or balls[ball2_index].color == RED:
+                    RED_collision_times.append(time_since_last_RED_collision)
+                    time_since_last_RED_collision = 0
+                    RED_collision_distances.append(distance_since_last_collision)
                     distance_since_last_collision = 0
                 balls[ball1_index], balls[ball2_index] = collision(balls[ball1_index], balls[ball2_index])
                 # breaks the second for loop, so the balls wont stuck into each other
