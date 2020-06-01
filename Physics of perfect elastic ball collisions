@@ -168,19 +168,11 @@ clock = pygame.time.Clock()
 
 # creating balls
 balls = []
-count = 0
-while count < NUMBER_OF_BALLS:
-    for i in range(1, floor(SCREEN_HEIGHT / (2.5 * BALLS_SIZE))):
-        for j in range(1, floor(SCREEN_WIDTH / (2.5 * BALLS_SIZE))):
-            balls.append(Ball(randint(BALLS_SIZE, SCREEN_WIDTH - BALLS_SIZE),
-                              randint(BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE),
-                              uniform(-BALLS_SPEED, BALLS_SPEED), uniform(-BALLS_SPEED, BALLS_SPEED),
-                              BALLS_SIZE, BALLS_COLOR))
-            count += 1
-            if count == NUMBER_OF_BALLS:
-                break
-        if count == NUMBER_OF_BALLS:
-            break
+for i in range(NUMBER_OF_BALLS):
+    balls.append(Ball(randint(BALLS_SIZE, SCREEN_WIDTH - BALLS_SIZE),
+                      randint(BALLS_SIZE, SCREEN_HEIGHT - BALLS_SIZE),
+                      uniform(-BALLS_SPEED, BALLS_SPEED), uniform(-BALLS_SPEED, BALLS_SPEED),
+                      BALLS_SIZE, BALLS_COLOR))
 
 # main loop
 time = 0
