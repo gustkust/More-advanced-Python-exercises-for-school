@@ -1,6 +1,6 @@
 # imports
 import pygame
-from math import sqrt, floor
+from math import sqrt
 from random import randint, uniform
 
 
@@ -10,9 +10,9 @@ SCREEN_HEIGHT = 720
 FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
 BALLS_COLOR = (31, 132, 155)
-BALLS_SIZE = 36
-NUMBER_OF_BALLS = 6
-BALLS_SPEED = 10
+BALLS_SIZE = 30
+NUMBER_OF_BALLS = 30
+BALLS_SPEED = 5
 RED_LAUNCH_TIME = 100
 STOP_TIME = 3600 + RED_LAUNCH_TIME
 RED = (155, 31, 31)
@@ -49,7 +49,8 @@ def collision(ball1, ball2):
     # collision calculation
     # 1
     # unit normal vector
-    un = [ball1.x - ball2.x, ball1.y - ball2.y]
+    n = [ball1.x - ball2.x, ball1.y - ball2.y]
+    un = [n[0] / (n[0] ** 2 + n[1] ** 2) ** (1 / 2), n[1] / (n[0] ** 2 + n[1] ** 2) ** (1 / 2)]
     # unit tangent vector
     ut = [-un[1], un[0]]
     # 2
