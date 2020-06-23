@@ -11,8 +11,8 @@ FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
 BALLS_COLOR = (31, 132, 155)
 BALLS_SIZE = 30
-NUMBER_OF_BALLS = 30
-BALLS_SPEED = 5
+NUMBER_OF_BALLS = 100
+BALLS_SPEED = 2
 RED_LAUNCH_TIME = 100
 STOP_TIME = 3600 + RED_LAUNCH_TIME
 RED = (155, 31, 31)
@@ -143,16 +143,16 @@ def move(ball):
     # checking for wall collision
     if ball.x >= SCREEN_WIDTH - BALLS_SIZE:
         ball.x_speed = -ball.x_speed
-        ball.x = SCREEN_WIDTH - BALLS_SIZE - 1
+        ball.x = 2 * SCREEN_WIDTH - ball.x - 2 * BALLS_SIZE
     if ball.x <= BALLS_SIZE:
         ball.x_speed = -ball.x_speed
-        ball.x = BALLS_SIZE + 1
+        ball.x = 2 * BALLS_SIZE - ball.x
     if ball.y >= SCREEN_HEIGHT - BALLS_SIZE:
         ball.y_speed = -ball.y_speed
-        ball.y = SCREEN_HEIGHT - BALLS_SIZE - 1
+        ball.y = 2 * SCREEN_HEIGHT - ball.y - 2 * BALLS_SIZE
     if ball.y <= BALLS_SIZE:
         ball.y_speed = -ball.y_speed
-        ball.y = BALLS_SIZE + 1
+        ball.y = 2 * BALLS_SIZE - ball.y
     return ball
 
 
