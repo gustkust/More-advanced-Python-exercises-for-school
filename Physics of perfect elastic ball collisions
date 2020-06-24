@@ -11,8 +11,8 @@ FPS = 60
 BACKGROUND_COLOR = (255, 255, 255)
 BALLS_COLOR = (31, 132, 155)
 BALLS_SIZE = 30
-NUMBER_OF_BALLS = 100
-BALLS_SPEED = 2
+NUMBER_OF_BALLS = 10
+BALLS_SPEED = 5
 RED_LAUNCH_TIME = 100
 STOP_TIME = 3600 + RED_LAUNCH_TIME
 RED = (155, 31, 31)
@@ -60,22 +60,10 @@ def collision(ball1, ball2):
     v2 = [ball2.x_speed, ball2.y_speed]
     # 3
     # vectors to plain numbers
-    if un[0] * un[0] + un[1] * un[1] == 0:
-        v1n = 0
-    else:
-        v1n = (v1[0] * un[0] + v1[1] * un[1]) / (un[0] * un[0] + un[1] * un[1])
-    if ut[0] * ut[0] + ut[1] * ut[1] == 0:
-        v1t = 0
-    else:
-        v1t = (v1[0] * ut[0] + v1[1] * ut[1]) / (ut[0] * ut[0] + ut[1] * ut[1])
-    if un[0] * un[0] + un[1] * un[1] == 0:
-        v2n = 0
-    else:
-        v2n = (v2[0] * un[0] + v2[1] * un[1]) / (un[0] * un[0] + un[1] * un[1])
-    if ut[0] * ut[0] + ut[1] * ut[1] == 0:
-        v2t = 0
-    else:
-        v2t = (v2[0] * ut[0] + v2[1] * ut[1]) / (ut[0] * ut[0] + ut[1] * ut[1])
+    v1n = v1[0] * un[0] + v1[1] * un[1]
+    v1t = v1[0] * ut[0] + v1[1] * ut[1]
+    v2n = v2[0] * un[0] + v2[1] * un[1]
+    v2t = v2[0] * ut[0] + v2[1] * ut[1]
     # 4
     # new tangent velocities
     # there is no friction so this step is not necessary
